@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "222203623140",
+    "firebase_url": "https://mobile-challenge-e888b-default-rtdb.firebaseio.com",
+    "project_id": "mobile-challenge-e888b",
+    "storage_bucket": "mobile-challenge-e888b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222203623140:android:6383183dc021692251def1",
+        "android_client_info": {
+          "package_name": "com.example.todo_chat_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNsbdEtQbyoC4ysOg_13TbRuQYKH4-zQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
