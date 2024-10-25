@@ -10,11 +10,15 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  dartz: ^0.10.1
+  equatable: ^2.0.5
+  firebase_auth: ^5.3.1
   firebase_core: ^3.6.0
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  get_it: ^8.0.1
 
 dev_dependencies:
   flutter_test:
