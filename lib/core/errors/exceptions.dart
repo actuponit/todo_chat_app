@@ -1,3 +1,8 @@
-class ServerException implements Exception {}
+class MyFirebaseException implements Exception {
+  final String message;
 
-class CacheException implements Exception {}
+  MyFirebaseException(this.message);
+
+  @override
+  String toString() => 'MyFirebaseException: $message';
+}
