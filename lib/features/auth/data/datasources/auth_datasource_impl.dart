@@ -15,6 +15,7 @@ class AuthDatasourceImpl extends AuthDatasource{
   @override
   Future<UserModel> getUser() async {
     final user = _firebaseAuth.currentUser;
+    await updateUserPresence(user);
     if(user != null){
       final snapshot = await _dbref.child('${user.uid}/name').get();
       if (snapshot.value != null) {
@@ -30,6 +31,7 @@ class AuthDatasourceImpl extends AuthDatasource{
   @override
   Future<UserModel> login(String email, String password) async {
     UserCredential credential = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+    await updateUserPresence(credential.user);
     if (credential.user != null) {
       final snapshot = await _dbref.child('${credential.user?.uid}/name').get();
       if (snapshot.value != null) {
@@ -45,6 +47,7 @@ class AuthDatasourceImpl extends AuthDatasource{
   @override
   Future<UserModel> register(UserModel user) async {
     UserCredential credential = await _firebaseAuth.createUserWithEmailAndPassword(email: user.email, password: user.password);
+    await updateUserPresence(credential.user);
     if (credential.user != null) {
       await _dbref.child('${credential.user?.uid}').set({
         'name': user.name,
@@ -59,9 +62,23 @@ class AuthDatasourceImpl extends AuthDatasource{
   @override
   Future<void> logout() async {
     try {
+      await updateUserPresence(_firebaseAuth.currentUser, logout: true);
       await _firebaseAuth.signOut();
     } catch (e) {
       throw MyFirebaseAuthException('Error while logging out: $e');
+    }
+  }
+
+
+  Future<void> updateUserPresence(User? user, {bool? logout}) async {
+    if(user != null){
+      await _dbref.child('${user.uid}/online').set(true);
+      await _dbref.child('${user.uid}/online').onDisconnect().set(false);
+      await _dbref.child('${user.uid}/last_seen').onDisconnect().set(ServerValue.timestamp);
+      if(logout != null && logout){
+        await _dbref.child('${user.uid}/online').set(false);
+        await _dbref.child('${user.uid}/last_seen').set(ServerValue.timestamp);
+      }
     }
   }
 }
