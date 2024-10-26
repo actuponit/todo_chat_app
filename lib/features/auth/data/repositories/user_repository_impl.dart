@@ -30,12 +30,12 @@ class UserRepositoryImpl extends UserRepository{
       return Right(await datasource.login(email, password));
     } on firebase_auth.FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        return const Left(FirebaseFailure('No user found for that email.'));
+        return const Left(FirebaseFailure('Firebase Error: No user found for that email.'));
       } else if (e.code == 'wrong-password') {
-        return const Left(FirebaseFailure('Wrong password provided for that user.'));
+        return const Left(FirebaseFailure('Firebase Error: Wrong password provided for that user.'));
       }
       print(e);
-      return Left(FirebaseFailure('Firebase Error: Login Error occured: ${e.message}'));
+      return Left(FirebaseFailure('${e.message}'));
     } on MyFirebaseAuthException catch(e) {
       return Left(FirebaseFailure(e.toString()));
     } catch (e) {
@@ -66,7 +66,7 @@ class UserRepositoryImpl extends UserRepository{
         return const Left(FirebaseFailure('Firebase Error: Email already in use.'));
       }
       print(e);
-      return Left(FirebaseFailure('Firebase Error: ${e.message}'));
+      return Left(FirebaseFailure('${e.message}'));
     } on MyFirebaseAuthException catch(e) {
       return Left(FirebaseFailure(e.toString()));
     } catch (e) {

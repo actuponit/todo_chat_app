@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../features/auth/presentation/screens/login_screen.dart';
+import '../features/auth/presentation/screens/signup_screen.dart';
 import 'home_page.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -21,25 +23,42 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       //   },
       //   transitionDuration: const Duration(milliseconds: 700),
       // );
-    // case 'login':
-      // return PageRouteBuilder(
-      //   pageBuilder: (context, animation, secondaryAnimation) => Login(),
-      //   transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      //     const begin = Offset(1, 0);
-      //     const end = Offset.zero;
-      //     const curve = Curves.ease;
+    case 'login':
+      return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const LogInScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1, 0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
 
-      //     var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      //     var offsetAnimation = animation.drive(tween);
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
 
-      //     return SlideTransition(
-      //       position: offsetAnimation,
-      //       child: child,
-      //     );
-      //   },
-      //   transitionDuration: const Duration(milliseconds: 700),
-      // );
-    
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 700),
+      );
+    case 'register':
+      return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const RegisterScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(-1, 0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 700),
+      );
     default:
       return MaterialPageRoute(builder: (context) => const HomePage());
     }

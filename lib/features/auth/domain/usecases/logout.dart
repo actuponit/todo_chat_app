@@ -9,7 +9,7 @@ class Logout extends UseCase {
   Logout(this.repository);
 
   @override
-  Future<Either<Failure, dynamic>> call(params) {
+  Future<Either<Failure, void>> call(params) {
     return repository.logout();
   }
   
