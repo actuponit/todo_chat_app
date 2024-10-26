@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../models/user_model.dart';
@@ -6,15 +7,23 @@ import 'auth_datasource.dart';
 
 class AuthDatasourceImpl extends AuthDatasource{
   final FirebaseAuth _firebaseAuth;
-  AuthDatasourceImpl({FirebaseAuth? firebaseAuth}): _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+  final DatabaseReference _dbref;
+  AuthDatasourceImpl({FirebaseAuth? firebaseAuth, DatabaseReference? dbref}) : 
+    _dbref = dbref ?? FirebaseDatabase.instance.ref().child('users'),
+    _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
   @override
   Future<UserModel> getUser() async {
     final user = _firebaseAuth.currentUser;
     if(user != null){
-      return UserModel.fromFirebase(user);
+      final snapshot = await _dbref.child('${user.uid}/name').get();
+      if (snapshot.value != null) {
+        return UserModel.fromFirebase(user, name: snapshot.value as String);
+      } else {
+        throw MyFirebaseDBException('User not found');
+      }
     } else {
-      throw MyFirebaseException('User not found');
+      throw MyFirebaseAuthException('User not found');
     }
   }
 
@@ -22,9 +31,14 @@ class AuthDatasourceImpl extends AuthDatasource{
   Future<UserModel> login(String email, String password) async {
     UserCredential credential = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
     if (credential.user != null) {
-      return UserModel.fromFirebase(credential.user!);
+      final snapshot = await _dbref.child('${credential.user?.uid}/name').get();
+      if (snapshot.value != null) {
+        return UserModel.fromFirebase(credential.user!, name: snapshot.value as String);
+      } else {
+        throw MyFirebaseDBException('User not found');
+      }
     } else {
-      throw MyFirebaseException('User is null after login');
+      throw MyFirebaseAuthException('User is null after login');
     }
   }
 
@@ -32,9 +46,13 @@ class AuthDatasourceImpl extends AuthDatasource{
   Future<UserModel> register(UserModel user) async {
     UserCredential credential = await _firebaseAuth.createUserWithEmailAndPassword(email: user.email, password: user.password);
     if (credential.user != null) {
-      return UserModel.fromFirebase(credential.user!);
+      await _dbref.child('${credential.user?.uid}').set({
+        'name': user.name,
+        'email': user.email,
+      });
+      return UserModel.fromFirebase(credential.user!, name: user.name);
     } else {
-      throw MyFirebaseException('User is null after register');
+      throw MyFirebaseAuthException('User is null after register');
     }
   }
 
@@ -43,7 +61,7 @@ class AuthDatasourceImpl extends AuthDatasource{
     try {
       await _firebaseAuth.signOut();
     } catch (e) {
-      throw MyFirebaseException('Error while logging out: $e');
+      throw MyFirebaseAuthException('Error while logging out: $e');
     }
   }
 }

@@ -17,7 +17,7 @@ class UserRepositoryImpl extends UserRepository{
   Future<Either<Failure, User>> getUser() async {
     try {
       return Right(await datasource.getUser());
-    } on MyFirebaseException catch (e) {
+    } on MyFirebaseAuthException catch (e) {
       return Left(FirebaseFailure(e.toString()));
     } catch (e) {
       return Left(UnexpectedFailure('Error while getting user: $e'));
@@ -36,7 +36,7 @@ class UserRepositoryImpl extends UserRepository{
       }
       print(e);
       return Left(FirebaseFailure('Firebase Error: Login Error occured: ${e.message}'));
-    } on MyFirebaseException catch(e) {
+    } on MyFirebaseAuthException catch(e) {
       return Left(FirebaseFailure(e.toString()));
     } catch (e) {
       return Left(UnexpectedFailure('Error while logging in: $e'));
@@ -67,7 +67,7 @@ class UserRepositoryImpl extends UserRepository{
       }
       print(e);
       return Left(FirebaseFailure('Firebase Error: ${e.message}'));
-    } on MyFirebaseException catch(e) {
+    } on MyFirebaseAuthException catch(e) {
       return Left(FirebaseFailure(e.toString()));
     } catch (e) {
       return Left(UnexpectedFailure('Error while logging in: $e'));

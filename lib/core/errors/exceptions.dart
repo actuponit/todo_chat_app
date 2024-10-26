@@ -1,8 +1,17 @@
-class MyFirebaseException implements Exception {
+class MyFirebaseAuthException implements Exception {
   final String message;
 
-  MyFirebaseException(this.message);
+  MyFirebaseAuthException(this.message);
 
   @override
-  String toString() => 'MyFirebaseException: $message';
+  String toString() => 'MyFirebaseAuthException: $message';
+}
+
+class MyFirebaseDBException implements Exception {
+  final String message;
+
+  MyFirebaseDBException(this.message);
+
+  @override
+  String toString() => 'MyFirebaseDatabaseException: $message';
 }
