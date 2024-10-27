@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../features/auth/presentation/blocs/bloc/auth_bloc.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
+import '../features/todo/presentation/bloc/todo_bloc.dart';
 import '../injection_container.dart';
 import 'routes.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthBloc>(
           create: (_) => locator<AuthBloc>()..add(AuthStarted()),
         ),
+        BlocProvider<TodoBloc>(create: (_) => locator<TodoBloc>()..add(GetTodoListsStarted())),
       ],
       child: MaterialApp(
         title: 'Todo and Chat app',
